@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Electrical Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+      .hero-video-container {
+        width: 100%;
+        max-height: 280px; 
+        overflow: hidden;
+        position: relative;
+      }
+      .hero-video-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+      }
+      .dropdown-menu {
+        margin-top: 10px !important;
+      }
+
+      /* עיצוב כפתור ה-AI של Gemini */
+      #ai-assistant-bubble {
+        position: fixed;
+        bottom: 30px;
+        left: 30px; 
+        width: 65px;
+        height: 65px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #e0e0e0;
+        text-decoration: none;
+      }
+
+      #ai-assistant-bubble:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+      }
+
+      .ai-label {
+        position: absolute;
+        right: 75px;
+        background: #1a73e8;
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+
+      #ai-assistant-bubble:hover .ai-label {
+        opacity: 1;
+      }
+
+      #ai-assistant-bubble img {
+        width: 35px;
+        height: 35px;
+      }
+    </style>
+  </head>
+  <body>
+
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">Electrical Product</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 fw-medium">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">דף הבית</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              מוצרים
+            </a>
+            <ul class="dropdown-menu text-end">
+              <li><a class="dropdown-item" href="#">סמארטפונים</a></li>
+              <li><a class="dropdown-item" href="#">מחשבים</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">אביזרים</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">אודות</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">צור קשר</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <div class="dropdown order-lg-2">
+            <a href="#" class="text-dark text-decoration-none d-flex align-items-center gap-1 fw-semibold dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle fs-4"></i>
+              <span class="d-none d-md-inline">חשבון שלי</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 text-end">
+              <li><h6 class="dropdown-header">שלום אורח</h6></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">התחברות</a></li>
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">הרשמה</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">ההזמנות שלי</a></li>
+            </ul>
+          </div>
+
+          <form class="d-flex order-lg-1" role="search">
+            <div class="input-group">
+              <input class="form-control" type="search" placeholder="חפש מוצר..." aria-label="Search">
+              <button class="btn btn-dark" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-video-container mb-4">
+    <video autoplay muted loop playsinline>
+      <source src="/uploads/videos/macbook1.mp4" type="video/mp4">
+      הדפדפן שלך לא תומך בוידאו.
+    </video>
+  </div>
+
+  {{{body}}}
+
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="loginModalLabel">התחברות</h5>
+          <button type="button" class="btn-close ms-0" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-end">
+          <form action="/user/login" method="POST">
+            <div class="mb-3">
+              <label class="form-label">אימייל</label>
+              <input type="email" name="email" class="form-control text-end" placeholder="email@example.com" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">סיסמה</label>
+              <input type="password" name="password" class="form-control text-end" placeholder="הכנס סיסמה" required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">כניסה</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="registerModalLabel">הרשמה לאתר</h5>
+          <button type="button" class="btn-close ms-0" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-end">
+          <form action="/user/register" method="POST">
+            <div class="mb-3">
+              <label class="form-label">שם מלא</label>
+              <input type="text" name="fullname" class="form-control text-end" placeholder="הכנס שם מלא" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">אימייל</label>
+              <input type="email" name="email" class="form-control text-end" placeholder="email@example.com" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">סיסמה</label>
+              <input type="password" name="password" class="form-control text-end" placeholder="בחר סיסמה" required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">הרשמה</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://gemini.google.com/" target="_blank" id="ai-assistant-bubble">
+      <span class="ai-label">השוואת מחירים ב-AI</span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" alt="Gemini Logo">
+  </a>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
