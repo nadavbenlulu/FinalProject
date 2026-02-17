@@ -1,3 +1,4 @@
+
 const mongoose=require('mongoose');
 
 const Schema= new mongoose.Schema({
@@ -7,6 +8,11 @@ const Schema= new mongoose.Schema({
     picname:String
 });
 module.exports=mongoose.model('product',Schema)
+
+
+
+
+// להשאיר כהערה
 
 // const Product= new mongoose.model('products',productSchema);
 // //מבצעים חיפושים של כל המוצרים בטבלת מוצרים ומדפיסים אותם 

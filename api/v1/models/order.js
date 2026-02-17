@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 
 const Schema= new mongoose.Schema({
-    pid:Number,
+    pid:String,
     pname:String,
     totalprice:Number,
     odate:Number

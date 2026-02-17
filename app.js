@@ -5,15 +5,15 @@ const jwt = require('jsonwebtoken');
 const { pid } = require('process');
 const app = express();
 
-// --- ייבוא המודל של המוצרים (הוספתי את זה) ---
 const Product = require('./api/v1/models/product'); 
+// --- ייבוא מודל ההזמנות כדי שנוכל לשמור את הלחיצה ---
+const Order = require('./api/v1/models/order'); 
 
 const productrouter = require('./api/v1/routes/product');
 const orderRouter = require('./api/v1/routes/order');
 const categoryRouter = require('./api/v1/routes/category');
 const userRouter = require('./api/v1/routes/user');
 const morgan = require('morgan');
-const ipFilter = require('./api/v1/middelwares/ipFilter');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const hbs = require('express-handlebars');
@@ -23,22 +23,46 @@ app.set('views', './api/v1/views');
 app.engine('handlebars', hbs.engine({
     layoutsDir: './api/v1/views/layouts',
     partialsDir: './api/v1/views/partials',
-    defaultLayout: 'main' // ודא שיש לך קובץ main.handlebars בתיקיית layouts
+    defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
 
 app.use(cors());
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(express.json()); // חשוב מאוד עבור ה-fetch מה-index
 app.use(express.urlencoded({ extended: true }));
 
-// --- עדכון הראוטר של דף הבית ---
+// --- הנתיב החדש: שמירת המוצר ב-Database בלחיצה ---
+app.post('/add-to-cart', async (req, res) => {
+    try {
+        const { productId } = req.body;
+
+        if (!productId) {
+            return res.status(400).json({ success: false, message: "ID חסר" });
+        }
+
+        // יצירת רשומה חדשה בטבלת ההזמנות (או סל הקניות)
+        const newSelection = new Order({
+            _id: new mongoose.Types.ObjectId(),
+            pid: productId,
+            orderDate: new Date()
+            // אם יש לך יוזר מחובר ב-Session, אפשר להוסיף כאן: uid: req.session.userId
+        });
+
+        await newSelection.save();
+        
+        console.log("מוצר נשמר ב-DB בהצלחה:", productId);
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Error saving selection:", error);
+        res.status(500).json({ success: false });
+    }
+});
+
+// --- ראוטר דף הבית ---
 app.get('/', async (req, res) => {
     try {
-        // שליפת המוצרים והפיכתם לאובייקטים פשוטים עבור Handlebars באמצעות .lean()
         const products = await Product.find().lean();
-        
-        // רינדור דף ה-index ושליחת מערך המוצרים אליו
         res.render('index', { 
             products: products,
             pageTitle: "דף הבית - מוצרים" 
@@ -58,11 +82,7 @@ app.use(express.static('public'));
 const mongoUser = process.env.MONGO_USER;
 const mongoPass = process.env.MONGO_PASS;
 const mongoServer = process.env.MONGO_SERVER;
-
 const mongoConstr = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoServer}/test`;
-
-// הדפסה לבדיקה (תוכל להסיר אחרי שהכל עובד)
-console.log("Connecting to:", mongoServer);
 
 mongoose.connect(mongoConstr).then(() => {
     console.log("connected to MongoDB");
@@ -71,6 +91,92 @@ mongoose.connect(mongoConstr).then(() => {
 });
 
 module.exports = app;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// require('dotenv').config();
+
+// const express = require('express');
+// const jwt = require('jsonwebtoken');
+// const { pid } = require('process');
+// const app = express();
+
+// // --- ייבוא המודל של המוצרים (הוספתי את זה) ---
+// const Product = require('./api/v1/models/product'); 
+
+// const productrouter = require('./api/v1/routes/product');
+// const orderRouter = require('./api/v1/routes/order');
+// const categoryRouter = require('./api/v1/routes/category');
+// const userRouter = require('./api/v1/routes/user');
+// const morgan = require('morgan');
+// const ipFilter = require('./api/v1/middelwares/ipFilter');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const hbs = require('express-handlebars');
+
+// app.set('views', './api/v1/views');
+
+// app.engine('handlebars', hbs.engine({
+//     layoutsDir: './api/v1/views/layouts',
+//     partialsDir: './api/v1/views/partials',
+//     defaultLayout: 'main' // ודא שיש לך קובץ main.handlebars בתיקיית layouts
+// }));
+// app.set('view engine', 'handlebars');
+
+// app.use(cors());
+// app.use(morgan('dev'));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+// // --- עדכון הראוטר של דף הבית ---
+// app.get('/', async (req, res) => {
+//     try {
+//         // שליפת המוצרים והפיכתם לאובייקטים פשוטים עבור Handlebars באמצעות .lean()
+//         const products = await Product.find().lean();
+        
+//         // רינדור דף ה-index ושליחת מערך המוצרים אליו
+//         res.render('index', { 
+//             products: products,
+//             pageTitle: "דף הבית - מוצרים" 
+//         });
+//     } catch (error) {
+//         console.error("Error fetching products:", error);
+//         res.status(500).send("שגיאה בטעינת המוצרים");
+//     }
+// });
+
+// app.use('/product', productrouter);
+// app.use('/order', orderRouter);
+// app.use('/user', userRouter);
+// app.use('/category', categoryRouter);
+// app.use(express.static('public'));
+
+// const mongoUser = process.env.MONGO_USER;
+// const mongoPass = process.env.MONGO_PASS;
+// const mongoServer = process.env.MONGO_SERVER;
+
+// const mongoConstr = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoServer}/test`;
+
+// // הדפסה לבדיקה (תוכל להסיר אחרי שהכל עובד)
+// console.log("Connecting to:", mongoServer);
+
+// mongoose.connect(mongoConstr).then(() => {
+//     console.log("connected to MongoDB");
+// }).catch((err) => {
+//     console.error("MongoDB connection error:", err);
+// });
+
+// module.exports = app;
 
 
 // require('dotenv').config();// הפעלת פונקציה שמשלבת את משתנה הסביבה מתוך הקובץ dotinit
