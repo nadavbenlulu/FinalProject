@@ -2,6 +2,107 @@
     /* עיצוב טופס ההתחברות */
     .login-section {
         background: #f4f4f9;
+        padding: 40px;
+        border-radius: 15px;
+        margin: 50px auto;
+        border: 1px solid #ddd;
+        direction: rtl;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .login-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .login-section input {
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .login-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+        font-size: 1.1rem;
+        transition: background 0.3s;
+    }
+    .login-btn:hover {
+        background: #0056b3;
+    }
+    
+    /* עיצוב כללי */
+    .container { 
+        direction: rtl; 
+        font-family: 'Segoe UI', sans-serif; 
+        padding: 20px; 
+        text-align: center;
+    }
+    h1 {
+        color: #222;
+        margin-top: 40px;
+    }
+</style>
+
+<div class="container">
+    <h1>ברוכים הבאים ל-Electrical Product</h1>
+    <p>יש להתחבר כדי לצפות במוצרים ולבצע רכישות</p>
+
+    <div class="login-section" id="loginArea">
+        <h3>התחברות למערכת</h3>
+        <input type="email" id="email" placeholder="כתובת אימייל">
+        <input type="password" id="password" placeholder="סיסמה">
+        <button class="login-btn" onclick="login()">התחבר עכשיו</button>
+    </div>
+</div>
+
+<script>
+function login() {
+    const emailVal = document.getElementById('email').value;
+    const passVal = document.getElementById('password').value;
+
+    if(!emailVal || !passVal) {
+        alert("נא להזין אימייל וסיסמה");
+        return;
+    }
+
+    fetch('/user/login', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailVal, password: passVal })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            // שמירת הטוקן
+            localStorage.setItem('token', data.token);
+            
+            // מעבר לדף המוצרים
+            window.location.href = '/product#'; 
+        } else {
+            alert('שגיאה: ' + (data.message || 'פרטים לא נכונים'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('תקלה בתקשורת עם השרת');
+    });
+}
+</script>
+
+
+{{!-- <style>
+    /* עיצוב טופס ההתחברות */
+    .login-section {
+        background: #f4f4f9;
         padding: 20px;
         border-radius: 15px;
         margin-bottom: 30px;
@@ -116,4 +217,4 @@ function addToCart(productId) {
     });
 }
 </script>
-
+ --}}

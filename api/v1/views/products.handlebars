@@ -1,56 +1,69 @@
-<div class="container mt-4">
-  
-  <div class="row mb-5 pt-3">
-    <div class="col-12 d-flex justify-content-center gap-2 flex-wrap">
-      <button class="btn btn-outline-primary rounded-pill shadow-sm px-4">הכל</button>
-      <button class="btn btn-outline-secondary rounded-pill shadow-sm px-4">מחשבים</button>
-      <button class="btn btn-outline-secondary rounded-pill shadow-sm px-4">סמארטפונים</button>
-      <button class="btn btn-outline-secondary rounded-pill shadow-sm px-4">אביזרים</button>
+<style>
+    .container { direction: rtl; font-family: 'Segoe UI', sans-serif; padding: 20px; max-width: 1000px; margin: 0 auto; }
+    .catalog-header { text-align: center; margin-bottom: 30px; }
+    .product-list { display: flex; flex-direction: column; gap: 20px; }
+    .product-card { 
+        display: flex; 
+        background: white; 
+        border-radius: 15px; 
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
+        padding: 20px; 
+        align-items: center; 
+        border: 1px solid #eee; 
+    }
+    .image-container { width: 150px; height: 120px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .product-image { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .product-info { flex-grow: 1; padding: 0 30px; }
+    .price-amount { font-size: 1.8rem; color: #d93025; font-weight: bold; }
+    .buy-button { background-color: #ffc107; color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    .details-btn { display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; }
+</style>
+
+<div class="container">
+    <div class="catalog-header">
+        <h1>הקטלוג המלא של מוצרי החשמל</h1>
+        <p>מצאת את מה שחיפשת? הוסף לסל או לחץ לפרטים נוספים</p>
     </div>
-  </div>
 
-  <div class="row">
-    {{#each data}}
-    <div class="col-12 mb-4">
-      <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden; background: #fff;">
-        <div class="row g-0 align-items-center">
-          
-          <div class="col-md-3 p-4 text-center">
-            <img src="/uploads/pics/{{this.picname}}" class="img-fluid" alt="{{this.pname}}" style="max-height: 160px; object-fit: contain;">
-          </div>
+    <div class="product-list">
+        {{#each products}}
+            <div class="product-card">
+                <div class="image-container">
+                    {{#if this.picname}}
+                        <img src="/uploads/pics/{{this.picname}}" class="product-image">
+                    {{else}}
+                        <div style="font-size: 3rem;">🔌</div>
+                    {{/if}}
+                </div>
 
-          <div class="col-md-6 border-start border-end py-3">
-            <div class="card-body text-end">
-              <h4 class="card-title fw-bold" style="color: #222;">{{this.pname}}</h4>
-              <p class="card-text text-muted mb-2">מכירה מיוחדת • אחריות יבואן • משלוח עד הבית</p>
-              <div class="d-flex flex-wrap gap-2 justify-content-start mt-3" style="direction: rtl;">
-                <span class="badge bg-success-subtle text-success border border-success-secondary">במלאי</span>
-                <span class="badge bg-light text-dark border">השוואת מחירים</span>
-                <span class="badge bg-light text-dark border">חדש בקטלוג</span>
-              </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{this.pname}}</h3>
+                    <div class="price-amount">₪{{this.price}}</div>
+                    <a href="/product/{{this._id}}" class="details-btn">למידע טכני נוסף ></a>
+                </div>
+
+                <div class="action-section">
+                    <button class="buy-button" onclick="addToCart('{{this._id}}')">🛒 הוסף לסל</button>
+                </div>
             </div>
-          </div>
-
-          <div class="col-md-3 text-center">
-            <div class="card-body">
-              <div class="text-muted small mb-1">החל מ-</div>
-              <h2 class="fw-bold mb-3" style="color: #e43d30;">₪{{this.price}}</h2>
-              <a href="#" class="btn btn-warning w-100 py-2 fw-bold shadow-sm" style="border-radius: 8px;">
-                 לפרטים וקנייה >
-              </a>
-              <div class="mt-2 small text-muted">ב-15 חנויות שונות</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+        {{/each}}
     </div>
-    {{/each}}
-  </div>
 </div>
 
-
-
+<script>
+function addToCart(productId) {
+    fetch('/add-to-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: productId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) alert('המוצר נוסף לסל!');
+    })
+    .catch(err => console.error('Error:', err));
+}
+</script>
 
 
 
